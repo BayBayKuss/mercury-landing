@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <title>Judicial CMS - Secure View</title>
+    <style>
+        :root {
+            --legal-blue: #2563eb; 
+            --mercury-purple: #814bf5;
+            --bg-light: #f3f4f6;
+            --bg-white: #ffffff;
+            --text-dark: #1e293b;
+            --text-gray: #64748b;
+            --border: #e2e8f0;
+        }
+        
+        body {
+            margin: 0; padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            display: flex; 
+            height: 100vh; 
+            overflow: hidden; 
+        }
+
+        .sidebar {
+            width: 260px; background: #1e293b;
+            border-right: 1px solid var(--border);
+            padding: 25px; display: flex; flex-direction: column; gap: 8px;
+            flex-shrink: 0;
+            overflow-y: auto;
+        }
+        .logo { 
+            font-weight: 700; font-size: 15px; color: #ffffff; text-transform: uppercase; letter-spacing: 0.5px;
+            margin-bottom: 40px; padding-left: 5px; display: flex; align-items: center; gap: 12px;
+            border-bottom: 1px solid #334155; padding-bottom: 20px;
+            line-height: 1.4;
+        }
+        .logo-icon { font-size: 24px; }
+
+        .nav-item {
+            padding: 10px 15px; color: #94a3b8; font-size: 13px; font-weight: 500;
+            border-radius: 6px; cursor: default; transition: 0.2s; display: flex; align-items: center; gap: 10px;
+        }
+        .nav-item:hover { background: #334155; color: #ffffff; }
+        .nav-item.active { 
+            background: rgba(255,255,255,0.1); color: #ffffff; border-left: 3px solid var(--legal-blue);
+        }
+
+        .main { 
+            flex: 1; 
+            padding: 60px; 
+            overflow-y: auto;
+        }
+        
+        .header {
+            display: flex; justify-content: space-between; align-items: flex-start;
+            margin-bottom: 30px;
+        }
+        .breadcrumb { font-size: 12px; color: var(--text-gray); margin-bottom: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;}
+        h1 { margin: 0; font-size: 24px; font-weight: 800; letter-spacing: -0.5px; color: #0f172a; }
+        
+        .badge {
+            background: #fff1f2; color: #be123c; padding: 6px 12px;
+            border: 1px solid #fecdd3;
+            border-radius: 4px; font-size: 11px; font-weight: 700; letter-spacing: 1px;
+            white-space: nowrap; text-transform: uppercase;
+        }
+
+        .profile-card {
+            background: var(--bg-white);
+            border-radius: 8px;
+            padding: 0;
+            max-width: 700px; 
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+
+        .card-header {
+            background: #f8fafc; padding: 15px 30px; border-bottom: 1px solid var(--border);
+            font-size: 12px; font-weight: 700; color: var(--text-gray); letter-spacing: 1px; text-transform: uppercase;
+            display: flex; justify-content: space-between;
+        }
+
+        .card-body { padding: 40px; }
+
+        .field-group {
+            margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid #f1f5f9;
+            display: grid; grid-template-columns: 180px 1fr;
+            align-items: center; 
+        }
+        .field-group:last-child { border-bottom: none; padding-bottom: 0; margin-bottom: 0; }
+
+        .label {
+            font-size: 11px; font-weight: 700; 
+            text-transform: uppercase; color: var(--text-gray); letter-spacing: 0.5px;
+        }
+        
+        .value {
+            font-size: 16px; color: var(--text-dark); font-weight: 500;
+            font-family: "JetBrains Mono", "Menlo", monospace;
+            padding: 8px 12px; background: #fff; border: 1px solid transparent; border-radius: 4px;
+            word-break: break-all;
+        }
+        .value:hover { background: #f8fafc; border-color: #e2e8f0; }
+
+        .password-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 6px 6px 6px 12px;
+            transition: 0.2s;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .password-wrapper:hover { border-color: #cbd5e1; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+
+        .masked-text {
+            font-family: monospace;
+            font-size: 20px;
+            letter-spacing: 2px;
+            color: var(--text-dark);
+        }
+
+        .copy-btn {
+            background: #ffffff; 
+            border: 1px solid #e2e8f0; 
+            color: var(--text-dark);
+            font-size: 13px;
+            font-weight: 600;
+            padding: 8px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex; align-items: center; gap: 8px; 
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            white-space: nowrap;
+        }
+        .copy-btn:hover {
+            background: #f8fafc;
+            border-color: var(--mercury-purple);
+            color: var(--mercury-purple);
+        }
+        .copy-btn:active { transform: scale(0.98); background: #f1f5f9;}
+        
+        .copy-btn.copied { background: #ecfdf5; border-color: #6ee7b7; color: #059669; box-shadow: none; }
+
+        ::selection { background: rgba(129, 75, 245, 0.2); color: var(--mercury-purple); }
+
+        @media (max-width: 768px) {
+            body { 
+                flex-direction: column; 
+                height: auto;
+                overflow: auto;
+            }
+            
+            .sidebar { 
+                width: 100%; 
+                height: auto; 
+                padding: 15px 20px; 
+                flex-direction: row; 
+                align-items: center; 
+                justify-content: space-between;
+                position: sticky; top: 0; z-index: 100;
+            }
+            
+            .logo { margin: 0; border: none; padding: 0; font-size: 13px; }
+            .nav-item { display: none; }
+            
+            .main { 
+                padding: 20px; 
+                overflow: visible;
+            }
+            
+            .header {
+                flex-direction: column; 
+                gap: 15px; 
+                align-items: flex-start;
+                margin-bottom: 20px;
+            }
+            
+            .badge { align-self: flex-start; }
+
+            .card-body { padding: 20px; }
+
+            .field-group { 
+                display: flex; 
+                flex-direction: column; 
+                align-items: flex-start; 
+                gap: 5px; 
+            }
+            
+            .label { margin-bottom: 2px; }
+            
+            .value, .password-wrapper { 
+                width: 100%; 
+                box-sizing: border-box; 
+            }
+            
+            .password-wrapper {
+                flex-direction: column;
+                align-items: stretch;
+                padding: 10px;
+            }
+            
+            .masked-text { 
+                text-align: center; 
+                margin-bottom: 10px; 
+                font-size: 18px;
+            }
+            
+            .copy-btn { 
+                width: 100%; 
+                justify-content: center; 
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="logo"><span class="logo-icon">⚖️</span> Central Judicial<br>Court System</div>
+        
+        <div class="nav-item active">Client Profiles</div>
+        <div class="nav-item">Secure Credentials</div>
+        <div class="nav-item">Case Evidence</div>
+        <div class="nav-item">Archives</div>
+    </div>
+
+    <div class="main">
+        <div class="header">
+            <div>
+                <div class="breadcrumb">Civil Division / Restricted Access</div>
+                <h1>Client Credential File</h1>
+            </div>
+            <div class="badge">CONFIDENTIAL</div>
+        </div>
+
+        <div class="profile-card">
+            <div class="card-header">
+                <span>Subject Profile</span>
+                <span>Ref: LANDRY-SEC-001</span>
+            </div>
+
+            <div class="card-body">
+                <div class="field-group">
+                    <span class="label">Legal Name</span>
+                    <div class="value">Irene Landry</div>
+                </div>
+
+                <div class="field-group">
+                    <span class="label">Registered Email</span>
+                    <div class="value">irene.landry@sandpiper.net</div>
+                </div>
+
+                <div class="field-group">
+                    <span class="label">System Password</span>
+                    
+                    <div class="password-wrapper">
+                        <span class="masked-text">•••••••••••••••</span>
+                        <button class="copy-btn" onclick="copyPassword(this)" data-password="Sandpiper$17M">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                            Copy Password
+                        </button>
+                    </div>
+                </div>
+
+                <div class="field-group">
+                    <span class="label">Case System ID</span>
+                    <div class="value">NM-1216-63-JMM</div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function copyPassword(btnElement) {
+            const realPassword = btnElement.getAttribute('data-password');
+            navigator.clipboard.writeText(realPassword).then(() => {
+                const originalHtml = btnElement.innerHTML;
+                btnElement.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> Copied!`;
+                btnElement.classList.add('copied');
+                
+                setTimeout(() => {
+                    btnElement.innerHTML = originalHtml;
+                    btnElement.classList.remove('copied');
+                }, 1500);
+            });
+        }
+    </script>
+
+</body>
+</html>
